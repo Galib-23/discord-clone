@@ -4,6 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -13,7 +14,15 @@ import { z } from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { useEffect, useState } from "react"
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -25,6 +34,13 @@ const formSchema = z.object({
 })
 
 const InitialModal = () => {
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, [])
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,11 +53,14 @@ const InitialModal = () => {
     console.log(values)
   }
 
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <Dialog open>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
-        <DialogHeader className="pt-8
-         px-6">
+      <DialogContent className="bg-white text-black p-0 overflow-hidden px-6 pt-8">
+        <DialogHeader className="">
           <DialogTitle className="text-2xl text-center font-bold">Create your server</DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
             This action cannot be undone. This will permanently delete your account
@@ -50,10 +69,27 @@ const InitialModal = () => {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <div className="flex items-center justify-center text-center">
-                TODO: image upload
-              </div>
-            <Button type="submit">Submit</Button>
+            <div className="flex items-center justify-center text-center">
+              TODO: image upload
+            </div>
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="uppercase font-bold text-xs text-zinc-500 dark:text-secondary/70">
+                    Server Name
+                  </FormLabel>
+                  <FormControl>
+                    <Input disabled={isLoading} className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0" placeholder="Enter Server Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter className="py-4">
+              <Button variant="primary" disabled={isLoading} type="submit">Create</Button>
+            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
