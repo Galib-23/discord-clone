@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -24,6 +23,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { useEffect, useState } from "react"
 import FileUpload from "../file-upload"
+import axios from 'axios';
+import { useRouter } from "next/navigation"
 
 const formSchema = z.object({
   name: z.string().min(1, {
@@ -35,13 +36,11 @@ const formSchema = z.object({
 })
 
 const InitialModal = () => {
-
   const [isMounted, setIsMounted] = useState(false);
-
+  const router = useRouter();
   useEffect(() => {
     setIsMounted(true);
   }, [])
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -51,13 +50,18 @@ const InitialModal = () => {
   });
   const isLoading = form.formState.isSubmitting;
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    try {
+      axios.post("/api/servers", values);
+      form.reset();
+      router.refresh();
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
   }
-
   if (!isMounted) {
     return null;
   }
-
   return (
     <Dialog open>
       <DialogContent className="bg-white text-black p-0 overflow-hidden px-6 pt-8">
