@@ -44,7 +44,11 @@ const ServerSidebar = async ({ serverId }: ServerSidebarProps) => {
   const role = server?.members.find((member) => member.profileId === profile?.id)?.role;
 
   if (!server) {
-    return redirect('/');     
+    return (
+      <div>
+        Loading...
+      </div>
+    );     
   }
 
   return (
