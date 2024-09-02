@@ -71,8 +71,7 @@ const CreateServerModal = () => {
         <DialogHeader className="">
           <DialogTitle className="text-2xl text-center font-bold">Create your server</DialogTitle>
           <DialogDescription className="text-center text-zinc-500">
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
+            Create your server and unleash the ultimate flexibility of connecting with your friends and sharing media and files.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

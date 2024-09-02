@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { db } from "./db";
+import { redirect } from "next/navigation";
 
 export const currentProfile = async () => {
   const { userId } = auth();
@@ -13,6 +14,10 @@ export const currentProfile = async () => {
       userId,
     },
   });
+
+  if (!profile) {
+    redirect('/')
+  }
 
   return profile;
 };
