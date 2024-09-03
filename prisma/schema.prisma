@@ -49,12 +49,12 @@ model Server {
 enum MemberRole {
   ADMIN
   MODERATOR
-  GUSET
+  GUEST
 }
 
 model Member {
   id   String     @id @default(uuid())
-  role MemberRole @default(GUSET)
+  role MemberRole @default(GUEST)
 
   profileId String
   profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
