@@ -41,7 +41,6 @@ const MemberModal = () => {
           serverId: server?.id,
         }
       })
-
       const response = await axios.patch(url, { role });
       router.refresh();
       onOpen("member", { server: response.data });
@@ -49,6 +48,25 @@ const MemberModal = () => {
       console.log(error);
     } finally {
       setLoadingId("");
+    }
+  }
+
+  const onkick = async (memberId: string) => {
+    try {
+      console.log("fun called")
+      setLoadingId(memberId);
+      const url = qs.stringifyUrl({
+        url: `/api/members/${memberId}`,
+        query: {
+          serverId: server?.id,
+        }
+      });
+      const response = await axios.delete(url);
+      console.log("res: --->> ", response)
+      router.refresh();
+      onOpen("member", { server: response.data });
+    } catch (error) {
+      console.log("Error in kick: ",error);
     }
   }
 
@@ -118,7 +136,9 @@ const MemberModal = () => {
                             </DropdownMenuPortal>
                           </DropdownMenuSub>
                           <DropdownMenuSeparator />
-                          <DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => onkick(member.id)}
+                          >
                             <Gavel className="h-4 w-4 mr-2" />
                             Kick
                           </DropdownMenuItem>
