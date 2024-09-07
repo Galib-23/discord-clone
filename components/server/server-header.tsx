@@ -67,9 +67,9 @@ const ServerHeader = ({ server, role }: ServerHeaderProps) => {
         {
           isModerator && (
             <DropdownMenuItem
-             className="px-3 py-2 text-sm cursor-pointer"
-             onClick={() => onOpen("createChannel")}
-             >
+              className="px-3 py-2 text-sm cursor-pointer"
+              onClick={() => onOpen("createChannel")}
+            >
               Create Channel
               <PlusCircle className="h-4 w-4 ml-auto" />
             </DropdownMenuItem>
@@ -90,7 +90,10 @@ const ServerHeader = ({ server, role }: ServerHeaderProps) => {
         }
         {
           !isAdmin && (
-            <DropdownMenuItem className="px-3 py-2 text-sm cursor-pointer text-rose-500">
+            <DropdownMenuItem
+              onClick={() => onOpen("leaveServer", { server })}
+              className="px-3 py-2 text-sm cursor-pointer text-rose-500"
+            >
               Leave Server
               <LogOut className="h-4 w-4 ml-auto" />
             </DropdownMenuItem>
