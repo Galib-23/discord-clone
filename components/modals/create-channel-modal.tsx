@@ -72,7 +72,7 @@ const CreateChannelModal = () => {
   }, [channelType, form]);
 
   const isLoading = form.formState.isSubmitting;
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const url = qs.stringifyUrl({
         url: "/api/channels",
@@ -80,7 +80,7 @@ const CreateChannelModal = () => {
           serverId: params?.serverId
         }
       })
-      axios.post(url, values);
+      await axios.post(url, values);
       form.reset();
       router.refresh();
       onClose();

@@ -62,7 +62,7 @@ const EditChannelModal = () => {
     }
   }, [channel, form]);
   const isLoading = form.formState.isSubmitting;
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       const url = qs.stringifyUrl({
         url: `/api/channels/${channel?.id}`,
@@ -70,7 +70,7 @@ const EditChannelModal = () => {
           serverId: server?.id
         }
       })
-      axios.patch(url, values);
+      await axios.patch(url, values);
       form.reset();
       router.refresh();
       onClose();
@@ -144,7 +144,7 @@ const EditChannelModal = () => {
               )}
             />
             <DialogFooter className="py-4">
-              <Button variant="primary" disabled={isLoading} type="submit">Create</Button>
+              <Button variant="primary" disabled={isLoading} type="submit">Save</Button>
             </DialogFooter>
           </form>
         </Form>
