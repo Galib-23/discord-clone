@@ -43,6 +43,7 @@ const ChatInput = ({
         query,
       });
       await axios.post(url, values);
+      form.setValue("content", "");
     } catch (error) {
       console.log(error)
     }
