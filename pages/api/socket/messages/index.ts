@@ -8,24 +8,27 @@ export default async function handler(
   res: NextApiResponseServerIo,
 ) {
   if (req.method !== "POST") {
-    return res.status(405).json({error: "method not allowed"})
+    return res.status(405).json({ error: "method not allowed" });
   }
+  
   try {
     const profile = await currentProfilePages(req);
     const { content, fileUrl } = req.body;
     const { serverId, channelId } = req.query;
+
     if (!profile) {
-      return res.status(401).json({ error: "Unauthorized"})
+      return res.status(401).json({ error: "Unauthorized" });
     }
     if (!serverId) {
-      return res.status(400).json({ error: "Server ID missing"})
+      return res.status(400).json({ error: "Server ID missing" });
     }
     if (!channelId) {
-      return res.status(400).json({ error: "Channel ID missing"})
+      return res.status(400).json({ error: "Channel ID missing" });
     }
     if (!content) {
-      return res.status(400).json({ error: "Content missing"})
+      return res.status(400).json({ error: "Content missing" });
     }
+
     const server = await db.server.findFirst({
       where: {
         id: serverId as string,
@@ -41,7 +44,7 @@ export default async function handler(
     });
 
     if (!server) {
-      return res.status(404).json({ error: "server not found"})
+      return res.status(404).json({ error: "server not found" });
     }
 
     const channel = await db.channel.findFirst({
@@ -50,13 +53,14 @@ export default async function handler(
         serverId: serverId as string
       }
     });
+
     if (!channel) {
-      return res.status(404).json({ error: "channel not found"})
+      return res.status(404).json({ error: "channel not found" });
     }
 
     const member = server.members.find((member) => member.profileId === profile.id);
     if (!member) {
-      return res.status(404).json({ error: "member not found"})
+      return res.status(404).json({ error: "member not found" });
     }
 
     const message = await db.message.create({
@@ -76,12 +80,16 @@ export default async function handler(
     });
 
     const channelKey = `chat:${channelId}:messages`;
-    res?.socket?.server?.io?.emit(channelKey)
+
+    // Emit the newly created message to the client
+    if (res?.socket?.server?.io) {
+      res.socket.server.io.emit(channelKey, message);
+    }
 
     return res.status(200).json(message);
 
   } catch (error) {
     console.log("MESSAGES POST: ", error);
-    return res.status(500).json({ message: "Internal Error"})
+    return res.status(500).json({ message: "Internal Error" });
   }
 }

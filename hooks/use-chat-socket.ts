@@ -23,11 +23,14 @@ export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) 
     if (!socket) {
       return;
     }
+
+    // Handle updating a message
     socket.on(updateKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
           return oldData;
         }
+
         const newData = oldData.pages.map((page: any) => {
           return {
             ...page,
@@ -39,12 +42,15 @@ export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) 
             }),
           };
         });
+
         return {
           ...oldData,
           pages: newData,
         };
       });
     });
+
+    // Handle adding a new message
     socket.on(addKey, (message: MessageWithMemberWithProfile) => {
       queryClient.setQueryData([queryKey], (oldData: any) => {
         if (!oldData || !oldData.pages || oldData.pages.length === 0) {
@@ -56,11 +62,16 @@ export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) 
             ],
           };
         }
+
         const newData = [...oldData.pages];
-        newData[0] = {
-          ...newData[0],
-          items: [message, ...newData[0].items],
+        
+        // Add the new message to the last page
+        const lastPageIndex = newData.length - 1;
+        newData[lastPageIndex] = {
+          ...newData[lastPageIndex],
+          items: [...newData[lastPageIndex].items, message],
         };
+
         return {
           ...oldData,
           pages: newData,
