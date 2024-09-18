@@ -15,7 +15,11 @@ type MessageWithMemberWithProfile = Message & {
   };
 };
 
-export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) => {
+export const useChatSocket = ({
+  addKey,
+  updateKey,
+  queryKey,
+}: ChatSocketProps) => {
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 
@@ -64,9 +68,11 @@ export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) 
         }
 
         const newData = [...oldData.pages];
-        
+
         // Add the new message to the last page
         const lastPageIndex = newData.length - 1;
+
+        // Ensure message is added to the bottom of the list
         newData[lastPageIndex] = {
           ...newData[lastPageIndex],
           items: [...newData[lastPageIndex].items, message],
@@ -77,6 +83,14 @@ export const useChatSocket = ({ addKey, updateKey, queryKey }: ChatSocketProps) 
           pages: newData,
         };
       });
+
+      // After adding the message, ensure that we scroll to the bottom
+      setTimeout(() => {
+        const bottomElement = document.getElementById("bottom-div"); // Use this id for bottomRef
+        if (bottomElement) {
+          bottomElement.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100); // Delay to allow DOM updates
     });
 
     return () => {
