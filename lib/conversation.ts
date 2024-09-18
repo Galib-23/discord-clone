@@ -4,14 +4,15 @@ export const getOrCreateConversation = async (
   memberOneId: string,
   memberTwoId: string,
 ) => {
+  console.log("called")
   let conversation =
     (await findConversation(memberOneId, memberTwoId)) ||
     (await findConversation(memberTwoId, memberOneId));
 
   if (!conversation) {
+    console.log("no convo")
     conversation = await createNewConversation(memberOneId, memberTwoId);
   }
-
   return conversation;
 };
 
@@ -35,6 +36,7 @@ const findConversation = async (memberOneId: string, memberTwoId: string) => {
       },
     });
   } catch (error) {
+    console.log("error in findConvo: ", error);
     return null;
   }
 };
@@ -63,6 +65,7 @@ const createNewConversation = async (
       },
     });
   } catch (error) {
+    console.log("error in creating convo: ", error);
     return null;
   }
 };
